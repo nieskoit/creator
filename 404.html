@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | KT Creator</title>
+
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#76c63f">
+
+<link rel="icon" type="image/png" href="https://www.krainatworcow.pl/img/kt.png">
+
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+<style>
+    @font-face {
+        font-family: "Plus Jakarta Sans";
+        src: url("https://krainatworcow.pl/fonts/PlusJakartaSans-Regular.ttf") format("truetype");
+        font-weight: 400;
+    }
+
+    @font-face {
+        font-family: "Plus Jakarta Sans";
+        src: url("https://krainatworcow.pl/fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+        font-weight: 600;
+    }
+
+    @font-face {
+        font-family: "Plus Jakarta Sans";
+        src: url("https://krainatworcow.pl/fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype");
+        font-weight: 800;
+    }
+
+    :root {
+        --accent: #76c63f;
+        --dark-bg: #050709;
+    }
+
+    body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: var(--dark-bg);
+        color: #e2e8f0;
+
+        background-image:
+            radial-gradient(circle at 50% 0%, rgba(118,198,63,.05) 0%, transparent 50%),
+            linear-gradient(rgba(255,255,255,.003) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.003) 1px, transparent 1px);
+
+        background-size: 100% 100%, 32px 32px, 32px 32px;
+    }
+
+    .panel {
+        background: rgba(10,14,20,.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(118,198,63,.08);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,.7);
+    }
+
+    .btn {
+        background: var(--accent);
+        color: #000;
+        font-weight: 800;
+        text-decoration: none;
+        transition: .2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6">
+
+<div class="panel rounded-3xl p-10 max-w-xl w-full text-center">
+
+    <div class="text-3xl font-black tracking-wider text-white mb-8">
+        <span style="color: var(--accent);" class="font-mono">&lt;KT&gt;</span> CREATOR
+    </div>
+
+    <div class="text-8xl font-black mb-4" style="color: var(--accent);">
+        404
+    </div>
+
+    <div class="uppercase tracking-[0.3em] text-zinc-500 text-xs font-bold mb-6">
+        Nie znaleziono strony
+    </div>
+
+    <h1 class="text-2xl font-bold text-white mb-4">
+        Zgubiłeś ścieżkę?
+    </h1>
+
+    <p class="text-zinc-400 leading-relaxed mb-8">
+        Wygląda na to, że ten adres nie istnieje lub został przeniesiony.
+    </p>
+
+    <a href="/" class="btn inline-flex px-8 py-4 rounded-2xl">
+        Powrót do panelu
+    </a>
+
+</div>
+
+</body>
+</html>
