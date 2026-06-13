@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KT Creator</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap');
+        
+        :root {
+            --neon-green: #00ff66;
+            --dark-bg: #050709;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 255, 102, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
+            background-size: 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        h1, h2, .font-cyber {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .neon-panel {
+            background: rgba(10, 14, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 102, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .neon-panel:hover {
+            border-color: rgba(0, 255, 102, 0.2);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.04), 0 10px 30px -10px rgba(0, 0, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn {
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 255, 102, 0.06) !important;
+            color: var(--neon-green) !important;
+            border-color: rgba(0, 255, 102, 0.3) !important;
+        }
+
+        .tab-btn.active::after {
+            width: 80%;
+        }
+
+        .tab-content {
+            animation: tabReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes tabReveal {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        select[multiple] option:checked {
+            background: rgba(0, 255, 102, 0.15) linear-gradient(0deg, rgba(0, 255, 102, 0.15) 0%, rgba(0, 255, 102, 0.15) 100%);
+            color: #00ff66;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #050709; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex flex-col justify-between">
+
+    <div class="w-full">
+        <header class="max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-zinc-900 pb-6">
+            <div class="text-center sm:text-left w-full">
+                <h1 class="text-3xl font-black tracking-wider text-white flex items-center gap-2 justify-center sm:justify-start">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 font-mono">&lt;KT&gt;</span> CREATOR
+                </h1>
+                <p class="text-zinc-500 text-xs mt-1 font-medium tracking-wide uppercase">Kraina Twórców Toolkit</p>
+            </div>
+        </header>
+
+        <nav class="max-w-4xl mx-auto mb-8 grid grid-cols-3 gap-2">
+            <button onclick="switchTab('tab-avatars')" id="btn-tab-avatars" class="tab-btn active bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-cyber font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                👤 Główki
+            </button>
+            <button onclick="switchTab('tab-descriptions')" id="btn-tab-descriptions" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-cyber font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                📝 Opisy
+            </button>
+            <button onclick="switchTab('tab-preview')" id="btn-tab-preview" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-cyber font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                🖼️ Miniaturki
+            </button>
+        </nav>
+
+        <main class="max-w-4xl mx-auto">
+            
+            <section id="tab-avatars" class="tab-content neon-panel p-6 rounded-2xl">
+                <h2 class="text-xl font-bold text-white mb-1 tracking-wide">Skin Asset Exporter</h2>
+                <p class="text-zinc-500 text-xs mb-6">Generuj zaawansowane rzuty postaci 3D bezpośrednio z silników Visage i Crafthead.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <input type="text" id="mc-username" placeholder="Wpisz nick z Minecraft (np. Parrot)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white kt-border-glow transition-all font-medium">
+                    <button onclick="generateAvatar()" class="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-black font-cyber font-bold text-xs tracking-widest uppercase px-6 py-3 rounded-xl transition-all shadow-lg active:scale-95 shrink-0 cursor-pointer">Inicjuj Render</button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
+                        <p class="text-[11px] font-cyber tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors">Popiersie HQ (Visage)</p>
+                        <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
+                            <img id="avatar-visage" src="https://vzge.me/bust/128/Steve" alt="Visage Bust" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <a id="download-visage" href="https://vzge.me/bust/512/Steve" target="_blank" class="text-[10px] font-cyber tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center">Pobierz 512px</a>
+                    </div>
+
+                    <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
+                        <p class="text-[11px] font-cyber tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors">Kostka 3D (Isometric)</p>
+                        <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
+                            <img id="avatar-3d" src="https://crafthead.net/cube/Steve" alt="3D Cube" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" style="image-rendering: pixelated;">
+                        </div>
+                        <a id="download-3d" href="https://crafthead.net/cube/Steve" target="_blank" class="text-[10px] font-cyber tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center">Pobierz kostkę</a>
+                    </div>
+
+                    <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
+                        <p class="text-[11px] font-cyber tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors">Awatar 2D (Flat)</p>
+                        <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
+                            <img id="avatar-2d" src="https://crafthead.net/avatar/Steve" alt="2D Avatar" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" style="image-rendering: pixelated;">
+                        </div>
+                        <a id="download-2d" href="https://crafthead.net/avatar/Steve" target="_blank" class="text-[10px] font-cyber tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center">Pobierz awatar</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-descriptions" class="tab-content neon-panel p-6 rounded-2xl hidden">
+                <h2 class="text-xl font-bold text-white mb-1 tracking-wide">Metadata Automator</h2>
+                <p class="text-zinc-500 text-xs mb-6">Generuj opisy w pełni zsynchronizowane ze wzorcem Krainy Twórców.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <label class="block text-zinc-400 mb-1.5 font-medium text-xs uppercase tracking-wide">Wstęp fabularny</label>
+                            <textarea id="desc-intro" oninput="updateLivePreview()" placeholder="W tym filmie zobaczycie, jak zostałem nowym mistrzem PVP..." rows="3" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white kt-border-glow transition-all resize-none"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-1">
+                                <label class="block text-zinc-400 mb-1.5 font-medium text-xs uppercase tracking-wide">Wystąpili</label>
+                                <input type="text" id="desc-creators" oninput="updateLivePreview()" placeholder="@Dombeeek @Zjavex" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-xs kt-border-glow transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-zinc-400 mb-1.5 font-medium text-xs uppercase tracking-wide">Inspiracja</label>
+                                <input type="text" id="desc-inspiration" oninput="updateLivePreview()" placeholder="Wemmbu" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-xs kt-border-glow transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-zinc-400 mb-1.5 font-medium text-xs uppercase tracking-wide">Budowla</label>
+                                <input type="text" id="desc-build" oninput="updateLivePreview()" placeholder="The Sky City" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-xs kt-border-glow transition-all">
+                            </div>
+                        </div>
+
+                        <div class="border border-zinc-900 p-4 bg-zinc-950/20 rounded-xl space-y-4">
+                            <span class="block text-zinc-400 font-cyber font-bold text-[11px] tracking-wider uppercase border-b border-zinc-900 pb-2">🎵 Muzyka w tle</span>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-zinc-500 mb-1.5 font-medium text-xs uppercase tracking-wide">Biblioteki (Ctrl + Klik)</label>
+                                    <select id="desc-music-list" onchange="updateLivePreview()" multiple class="w-full h-24 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white transition-all focus:border-green-500/40 outline-none text-xs">
+                                        <option value="Epidemic Sound">Epidemic Sound</option>
+                                        <option value="YouTube Audio Library">YouTube Audio Library</option>
+                                        <option value="Music courtesy of Mojang Studios">Music courtesy of Mojang Studios</option>
+                                        <option value="Kevin MacLeod (Incompetech)">Kevin MacLeod (Incompetech)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-zinc-500 mb-1.5 font-medium text-xs uppercase tracking-wide">Własny tekst</label>
+                                    <textarea id="desc-music-custom" oninput="updateLivePreview()" placeholder="Inni autorzy..." rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-white text-xs transition-all focus:border-green-500/40 outline-none resize-none h-24"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="generateDescription()" class="w-full bg-zinc-900 hover:bg-zinc-850 text-green-400 hover:text-green-300 font-cyber font-bold text-xs tracking-widest uppercase py-3.5 rounded-xl transition-all mt-4 cursor-pointer border border-zinc-800 hover:border-zinc-700">
+                            Kompiluj i kopiuj do schowka
+                        </button>
+                        <div id="copy-status" class="text-center text-xs text-green-400 h-4 opacity-0 transition-opacity font-cyber uppercase tracking-widest">Zapisano w pamięci podręcznej!</div>
+                    </div>
+
+                    <div class="border border-zinc-900 bg-zinc-950/60 rounded-xl p-4 h-full flex flex-col">
+                        <span class="block text-zinc-500 font-cyber font-bold text-[11px] tracking-wider uppercase border-b border-zinc-900 pb-2 mb-3">👁️ Podgląd wygenerowanego opisu</span>
+                        <pre id="live-preview-box" class="text-zinc-400 text-xs font-mono bg-zinc-950 p-3 rounded-lg border border-zinc-900/60 overflow-y-auto whitespace-pre-wrap break-all h-[340px] leading-relaxed"></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-preview" class="tab-content neon-panel p-6 rounded-2xl hidden">
+                <h2 class="text-xl font-bold text-white mb-1 tracking-wide">CTR Optimizer & Sandbox</h2>
+                <p class="text-zinc-500 text-xs mb-6">Przetestuj widoczność miniatur w różnych środowiskach YouTube przed i po publikacji.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="border border-zinc-900 rounded-xl p-4 bg-zinc-950/40 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] font-cyber tracking-widest bg-green-500/10 text-green-400 px-2 py-0.5 rounded border border-green-500/20 uppercase font-bold">Tryb offline</span>
+                            <h3 class="text-sm font-bold text-zinc-300 mt-2 mb-1">Projekt przed publikacją</h3>
+                            <p class="text-xs text-zinc-500 mb-3">Wgraj plik lokalny PNG/JPG z dysku.</p>
+                        </div>
+                        <div class="border border-dashed border-zinc-800 rounded-xl p-4 text-center hover:border-green-500/40 transition-all cursor-pointer relative bg-zinc-900/10">
+                            <input type="file" id="thumb-upload" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewThumbnail(event)">
+                            <p class="text-xs text-zinc-400" id="upload-placeholder">Wybierz plik graficzny</p>
+                        </div>
+                    </div>
+
+                    <div class="border border-zinc-900 rounded-xl p-4 bg-zinc-950/40 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] font-cyber tracking-widest bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded border border-zinc-800 uppercase font-bold">Tryb Live Stream</span>
+                            <h3 class="text-sm font-bold text-zinc-300 mt-2 mb-1">Opublikowany materiał</h3>
+                            <p class="text-xs text-zinc-500 mb-3">Pobierz istniejącą miniaturę przy użyciu dowolnego linku YT.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="yt-url-input" placeholder="Wklej link (np. https://youtu.be/...)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white kt-border-glow transition-all">
+                            <button onclick="loadYoutubeThumbnail()" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-green-400 text-xs font-cyber font-bold px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0">Pobierz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-zinc-900">
+                    <div>
+                        <span class="text-xs text-zinc-500 font-medium block mb-1.5">Karta Główna (Desktop Feed):</span>
+                        <div class="w-full aspect-video bg-zinc-950 rounded-xl overflow-hidden border border-zinc-900 relative">
+                            <img id="prev-desktop" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%230a0e14'/></svg>" class="w-full h-full object-cover">
+                            <div class="absolute bottom-2 right-2 bg-black/90 text-white text-[10px] px-1.5 py-0.5 font-bold rounded font-mono">14:23</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="text-xs text-zinc-500 font-medium block mb-1.5">Karta Mobilna (YouTube App):</span>
+                        <div class="w-full max-w-[320px] bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden">
+                            <div class="w-full aspect-video relative">
+                                <img id="prev-mobile" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%230a0e14'/></svg>" class="w-full h-full object-cover">
+                                <div class="absolute bottom-2 right-2 bg-black/90 text-white text-[10px] px-1.5 py-0.5 font-bold rounded font-mono">14:23</div>
+                            </div>
+                            <div class="p-3 flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-zinc-900 shrink-0 border border-zinc-800"></div>
+                                <div class="space-y-1.5 w-full">
+                                    <div class="h-3 bg-zinc-900 rounded w-[90%]"></div>
+                                    <div class="h-2 bg-zinc-900 rounded w-[55%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <span class="text-xs text-zinc-500 font-medium block mb-1.5">Sugerowane (Sidebar / Następny film):</span>
+                        <div class="flex gap-3 max-w-[400px] bg-zinc-950/40 p-2 rounded-xl border border-zinc-900">
+                            <div class="w-[160px] aspect-video bg-zinc-950 rounded-lg overflow-hidden border border-zinc-900 shrink-0 relative">
+                                <img id="prev-side" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%230a0e14'/></svg>" class="w-full h-full object-cover">
+                                <div class="absolute bottom-1 right-1 bg-black/90 text-white text-[9px] px-1 font-bold rounded font-mono">14:23</div>
+                            </div>
+                            <div class="space-y-2 py-1 w-full">
+                                <div class="h-3 bg-zinc-900 rounded w-full"></div>
+                                <div class="h-2 bg-zinc-900 rounded w-[70%]"></div>
+                                <div class="h-2 bg-zinc-900 rounded w-[40%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="max-w-4xl mx-auto text-center font-cyber text-zinc-600 text-[10px] tracking-widest uppercase mt-12 border-t border-zinc-950 pt-5 w-full">
+        Created by Nieskot
+    </footer>
+
+    <script>
+        // Wywołanie startowe, aby wygenerować pusty szablon przy załadowaniu strony
+        window.addEventListener('DOMContentLoaded', () => {
+            updateLivePreview();
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        function generateAvatar() {
+            const username = document.getElementById('mc-username').value.trim() || 'Steve';
+            document.getElementById('avatar-visage').src = `https://vzge.me/bust/128/${username}`;
+            document.getElementById('avatar-3d').src = `https://crafthead.net/cube/${username}`;
+            document.getElementById('avatar-2d').src = `https://crafthead.net/avatar/${username}`;
+            document.getElementById('download-visage').href = `https://vzge.me/bust/512/${username}`;
+            document.getElementById('download-3d').href = `https://crafthead.net/cube/${username}`;
+            document.getElementById('download-2d').href = `https://crafthead.net/avatar/${username}`;
+        }
+
+        function buildDescriptionText() {
+            const intro = document.getElementById('desc-intro').value.trim() || '[Tutaj pojawi się Twój wstęp fabularny]';
+            const creators = document.getElementById('desc-creators').value.trim() || 'Ekipa Krainy Twórców';
+            const inspiration = document.getElementById('desc-inspiration').value.trim();
+            const build = document.getElementById('desc-build').value.trim();
+
+            const selectedMusic = Array.from(document.getElementById('desc-music-list').selectedOptions).map(o => o.value);
+            const customMusic = document.getElementById('desc-music-custom').value.trim();
+            
+            let musicArray = [...selectedMusic];
+            if (customMusic) {
+                const customItems = customMusic.split(/[\n,]+/).map(item => item.trim()).filter(item => item.length > 0);
+                musicArray = musicArray.concat(customItems);
+            }
+            
+            let text = `${intro}\n\n`;
+            text += `Jest to film fabularny z serwera Kraina Twórców, gdzie każdy gracz ma nieskończoność żyć dopóki nie straci swojego kryształu odrodzenia\n\n`;
+            text += `Obejrzyj poprzednie filmy: https://www.youtube.com/playlist?list=PLssT-xPG13FeXKVVndw_C_CKdcanyUFmN\n`;
+            text += `Discord nagrywkowy: https://discord.gg/jRWkeeDrTb\n\n`;
+            text += `Hosting serwera Kraina Twórców zapewnia IceHost:\n`;
+            text += `https://icehost.pl\n\n`;
+            text += `Wystąpili: ${creators}\n\n`;
+            
+            if (inspiration) {
+                text += `Inspiracja: ${inspiration}\n\n`;
+            }
+            
+            text += `Znajdziesz mnie tutaj:\n`;
+            text += `• Instagram: https://instagram.com/nieskot\n`;
+            text += `• Discord dla widzów: https://discord.gg/T7jfms9Jvv\n\n`;
+
+            if (build) {
+                text += `Wykorzystana budowla: „${build}”\n\n`;
+            }
+
+            // Sekcja muzyki pojawi się tylko wtedy, gdy wybrano biblioteki lub wpisano własny tekst
+            if (musicArray.length > 0) {
+                const musicString = musicArray.join(', ');
+                text += `Muzyka:\n`;
+                text += `${musicString}`;
+            } else {
+                // Usuwamy zbędne nowe linie z końca tekstu, jeśli opis kończy się wcześniej
+                text = text.trimEnd();
+            }
+
+            return text;
+        }
+
+        function updateLivePreview() {
+            const previewBox = document.getElementById('live-preview-box');
+            if (previewBox) {
+                previewBox.textContent = buildDescriptionText();
+            }
+        }
+
+        function generateDescription() {
+            const finalForm = buildDescriptionText();
+
+            navigator.clipboard.writeText(finalForm).then(() => {
+                const status = document.getElementById('copy-status');
+                status.classList.remove('opacity-0');
+                setTimeout(() => status.classList.add('opacity-0'), 2000);
+            }).catch(() => {
+                alert("Błąd podczas kopiowania.");
+            });
+        }
+
+        function previewThumbnail(event) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    applyImageToPreviews(e.target.result);
+                    document.getElementById('upload-placeholder').innerText = "Wczytano: " + input.files[0].name;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function loadYoutubeThumbnail() {
+            const inputData = document.getElementById('yt-url-input').value.trim();
+            if (!inputData) return alert('Wprowadź link lub ID filmu!');
+
+            let videoId = '';
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+            const match = inputData.match(regex);
+
+            if (match && match[1]) {
+                videoId = match[1];
+            } else if (inputData.length === 11) {
+                videoId = inputData;
+            } else {
+                return alert('Nie rozpoznano formatu linku YouTube.');
+            }
+
+            applyImageToPreviews(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
+        }
+
+        function applyImageToPreviews(url) {
+            document.getElementById('prev-desktop').src = url;
+            document.getElementById('prev-side').src = url;
+            document.getElementById('prev-mobile').src = url;
+        }
+    </script>
+</body>
+</html>
