@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KT Creator</title>
-    <link rel="icon" type="image/png" href="https://www.krainatworcow.pl/img/kt.png">
+    <link rel="icon" type="image/png" href="https://krainatworcow.pl/img/kt.png">
     <meta name="robots" content="noindex, nofollow">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <link rel="preconnect" href="https://vzge.me">
+    <link rel="preconnect" href="https://crafthead.net">
+    <link rel="preconnect" href="https://minotar.net">
     <style>
         @font-face {
             font-family: "Plus Jakarta Sans";
@@ -37,6 +41,11 @@
             --dark-bg: #050709;
         }
 
+        html {
+            scroll-behavior: smooth;
+            overflow-y: scroll;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--dark-bg);
@@ -46,6 +55,12 @@
                 linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
             background-size: 100% 100%, 32px 32px, 32px 32px;
+            padding-bottom: 40px;
+            transition: padding-bottom 0.3s ease;
+        }
+
+        body.player-active {
+            padding-bottom: 120px;
         }
 
         .neon-panel {
@@ -53,13 +68,13 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(118, 198, 63, 0.08);
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .neon-panel:hover {
             border-color: rgba(118, 198, 63, 0.2);
             box-shadow: 0 0 30px rgba(118, 198, 63, 0.04), 0 10px 30px -10px rgba(0, 0, 0, 0.9);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         .tab-btn {
@@ -92,7 +107,7 @@
         }
 
         .tab-content {
-            animation: tabReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: tabReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes tabReveal {
@@ -106,15 +121,243 @@
             }
         }
 
-        select[multiple] option:checked {
-            background: rgba(118, 198, 63, 0.15) linear-gradient(0deg, rgba(118, 198, 63, 0.15) 0%, rgba(118, 198, 63, 0.15) 100%);
-            color: var(--accent);
-        }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #050709; }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .music-shell {
+            background: linear-gradient(180deg, rgba(10,14,20,0.92), rgba(7,10,14,0.92));
+            border: 1px solid rgba(118,198,63,0.12);
+            box-shadow: 0 18px 50px -24px rgba(0,0,0,0.85);
+        }
+
+        .music-card {
+            background: rgba(8, 12, 16, 0.82);
+            border: 1px solid rgba(118, 198, 63, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .music-card:hover {
+            border-color: rgba(118, 198, 63, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.32rem 0.7rem;
+            border-radius: 999px;
+            border: 1px solid rgba(63, 63, 70, 1);
+            background: rgba(24, 24, 27, 0.8);
+            color: #a1a1aa;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tag-cinematic {
+            border-color: rgba(96, 165, 250, 0.25);
+            background: rgba(59, 130, 246, 0.08);
+            color: #93c5fd;
+        }
+        .tag-cinematic:hover, .tag-cinematic.active-filter {
+            border-color: rgba(96, 165, 250, 0.6);
+            background: rgba(59, 130, 246, 0.25);
+            color: #f8fafc;
+        }
+
+        .tag-fight {
+            border-color: rgba(248, 113, 113, 0.25);
+            background: rgba(185, 28, 28, 0.1);
+            color: #fca5a5;
+        }
+        .tag-fight:hover, .tag-fight.active-filter {
+            border-color: rgba(248, 113, 113, 0.6);
+            background: rgba(185, 28, 28, 0.25);
+            color: #f8fafc;
+        }
+
+        .tag-sad {
+            border-color: rgba(167, 139, 250, 0.25);
+            background: rgba(109, 40, 217, 0.1);
+            color: #c084fc;
+        }
+        .tag-sad:hover, .tag-sad.active-filter {
+            border-color: rgba(167, 139, 250, 0.6);
+            background: rgba(109, 40, 217, 0.25);
+            color: #f8fafc;
+        }
+
+        .badge-info-modern {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(118, 198, 63, 0.1);
+            border: 1px solid rgba(118, 198, 63, 0.25);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: monospace;
+            cursor: help;
+            transition: all 0.2s ease;
+        }
+
+        .badge-info-modern:hover {
+            border-color: rgba(118, 198, 63, 0.5);
+            background: rgba(118, 198, 63, 0.2);
+            box-shadow: 0 0 8px rgba(118, 198, 63, 0.3);
+        }
+
+        .btn-soft {
+            background: rgba(24,24,27,0.9);
+            border: 1px solid rgba(63,63,70,1);
+            transition: 0.2s ease;
+        }
+
+        .btn-soft:hover {
+            border-color: rgba(118,198,63,0.25);
+            background: rgba(30,30,36,0.96);
+        }
+
+        .tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tooltip-box {
+            position: absolute;
+            z-index: 60;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%) translateY(4px);
+            width: 260px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(118, 198, 63, 0.15);
+            background: #090d13;
+            color: #cbd5e1;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.65);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 11.5px;
+            line-height: 1.45;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .tooltip-wrap:hover .tooltip-box {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            margin-top: -4px;
+            border-radius: 999px;
+            background: #ffffff;
+            transition: transform 0.1s, background-color 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            background: var(--accent);
+            transform: scale(1.25);
+        }
+
+        .spotify-player {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+            background: rgba(8, 11, 16, 0.94);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(118, 198, 63, 0.06);
+            box-shadow: 0 -12px 36px rgba(0,0,0,0.6);
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .spotify-player.visible {
+            transform: translateY(0);
+        }
+
+        .spotify-player-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 76px;
+        }
+
+        .filter-btn-all.active-filter {
+            background: rgba(118,198,63,0.12) !important;
+            border-color: rgba(118,198,63,0.4) !important;
+            color: var(--accent) !important;
+        }
+
+        .player-disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(3, 5, 7, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: #0b0f16;
+            border: 1px solid rgba(118, 198, 63, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            max-width: 480px;
+            width: 90%;
+            border-radius: 20px;
+            padding: 24px;
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.open .modal-box {
+            transform: scale(1) translateY(0);
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen flex flex-col justify-between">
@@ -130,24 +373,23 @@
         </header>
 
         <nav class="max-w-4xl mx-auto mb-8 grid grid-cols-3 gap-2">
-            <button onclick="switchTab('tab-avatars')" id="btn-tab-avatars" class="tab-btn active bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
-                👤 Główki
+            <button onclick="switchTab('tab-avatars', true)" id="btn-tab-avatars" class="tab-btn active bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                Główki
             </button>
-            <button onclick="switchTab('tab-descriptions')" id="btn-tab-descriptions" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
-                📝 Opisy
+            <button onclick="switchTab('tab-descriptions', true)" id="btn-tab-descriptions" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                Opisy
             </button>
-            <button onclick="switchTab('tab-preview')" id="btn-tab-preview" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
-                🖼️ Miniaturki
+            <button onclick="switchTab('tab-music', true)" id="btn-tab-music" class="tab-btn bg-zinc-950/40 hover:bg-zinc-900/60 border border-zinc-900 text-zinc-400 font-medium py-3 px-3 rounded-xl transition-all cursor-pointer text-xs tracking-wider uppercase flex items-center justify-center gap-2">
+                Muzyka
             </button>
         </nav>
 
         <main class="max-w-4xl mx-auto">
             
-            <!-- SEKCJA: GŁÓWKI -->
             <section id="tab-avatars" class="tab-content neon-panel p-6 rounded-2xl">
                 <h2 class="text-xl font-bold text-white mb-1 tracking-wide">Główki postaci</h2>
                 <p class="text-zinc-500 text-xs mb-4">Wczytaj główki i rendery postaci do miniaturek.</p>
-                <p class="text-[10px] text-zinc-600 mb-6">Wykorzystane zewnętrzne źródła: Visage & Crafthead.</p>
+                <p class="text-[10px] text-zinc-600 mb-6">Wykorzystane zewnętrzne źródła: Visage (vzge.me) - zapasowo Crafthead/Minotar.</p>
                 
                 <div class="flex flex-col sm:flex-row gap-3 mb-6">
                     <input type="text" id="mc-username" placeholder="Wpisz nick z Minecraft (np. Parrot)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:border-green-500/40 outline-none transition-all font-medium">
@@ -158,30 +400,29 @@
                     <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
                         <p class="text-[11px] tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors font-bold">Popiersie</p>
                         <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
-                            <img id="avatar-visage" src="https://vzge.me/bust/128/Steve" alt="Visage Bust" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                            <img id="avatar-visage" src="https://vzge.me/bust/128/Steve" alt="Bust" loading="eager" decoding="async" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105">
                         </div>
                         <a id="download-visage" href="https://vzge.me/bust/512/Steve" target="_blank" class="text-[10px] tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center font-bold">Pobierz</a>
                     </div>
 
                     <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
-                        <p class="text-[11px] tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors font-bold">Kostka 3D</p>
+                        <p class="text-[11px] tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors font-bold">Głowa 3D</p>
                         <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
-                            <img id="avatar-3d" src="https://crafthead.net/cube/Steve" alt="3D Cube" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" style="image-rendering: pixelated;">
+                            <img id="avatar-3d" src="https://vzge.me/head/128/Steve" alt="Head 3D" loading="eager" decoding="async" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105">
                         </div>
-                        <a id="download-3d" href="https://crafthead.net/cube/Steve" target="_blank" class="text-[10px] tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center font-bold">Pobierz</a>
+                        <a id="download-3d" href="https://vzge.me/head/512/Steve" target="_blank" class="text-[10px] tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center font-bold">Pobierz</a>
                     </div>
 
                     <div class="text-center flex flex-col items-center justify-between p-4 bg-zinc-950/60 rounded-xl border border-zinc-900 group">
-                        <p class="text-[11px] tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors font-bold">Awatar 2D</p>
+                        <p class="text-[11px] tracking-wider uppercase text-zinc-500 group-hover:text-green-400 transition-colors font-bold">Twarz 2D</p>
                         <div class="w-28 h-28 flex items-center justify-center p-1 my-3">
-                            <img id="avatar-2d" src="https://crafthead.net/avatar/Steve" alt="2D Avatar" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" style="image-rendering: pixelated;">
+                            <img id="avatar-2d" src="https://vzge.me/face/128/Steve" alt="Face 2D" loading="eager" decoding="async" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" style="image-rendering: pixelated;">
                         </div>
-                        <a id="download-2d" href="https://crafthead.net/avatar/Steve" target="_blank" class="text-[10px] tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center font-bold">Pobierz</a>
+                        <a id="download-2d" href="https://vzge.me/face/512/Steve" target="_blank" class="text-[10px] tracking-widest uppercase bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white py-2 rounded-lg border border-zinc-800 transition-all w-full text-center font-bold">Pobierz</a>
                     </div>
                 </div>
             </section>
 
-            <!-- SEKCJA: OPISY -->
             <section id="tab-descriptions" class="tab-content neon-panel p-6 rounded-2xl hidden">
                 <h2 class="text-xl font-bold text-white mb-1 tracking-wide">Generator opisu</h2>
                 <p class="text-zinc-500 text-xs mb-6">Uzupełnij pola i skopiuj gotowy opis.</p>
@@ -211,7 +452,7 @@
                         <div class="border border-zinc-900 p-4 bg-zinc-950/20 rounded-xl space-y-4">
                             <div class="flex items-start justify-between gap-3 border-b border-zinc-900 pb-2">
                                 <div>
-                                    <span class="block text-zinc-400 font-bold text-[11px] tracking-wider uppercase">🎵 Muzyka</span>
+                                    <span class="block text-zinc-400 font-bold text-[11px] tracking-wider uppercase">Muzyka</span>
                                     <p class="text-zinc-500 text-[11px] mt-1">Dodawaj kolejne pozycje.</p>
                                 </div>
                                 <button type="button" onclick="addMusicRow()" class="bg-zinc-900 hover:bg-zinc-800 text-green-400 border border-zinc-800 rounded-lg px-3 py-2 text-[10px] font-bold uppercase tracking-widest shrink-0">+ Dodaj</button>
@@ -222,7 +463,7 @@
                         <div class="border border-zinc-900 p-4 bg-zinc-950/20 rounded-xl space-y-4">
                             <div class="flex items-start justify-between gap-3 border-b border-zinc-900 pb-2">
                                 <div>
-                                    <span class="block text-zinc-400 font-bold text-[11px] tracking-wider uppercase">🔗 Sociale</span>
+                                    <span class="block text-zinc-400 font-bold text-[11px] tracking-wider uppercase">Sociale</span>
                                     <p class="text-zinc-500 text-[11px] mt-1">Sekcja pojawi się w opisie tylko wtedy, gdy dodasz przynajmniej jedną pozycję.</p>
                                 </div>
                                 <button type="button" onclick="addSocialRow()" class="bg-zinc-900 hover:bg-zinc-800 text-green-400 border border-zinc-800 rounded-lg px-3 py-2 text-[10px] font-bold uppercase tracking-widest shrink-0">+ Dodaj</button>
@@ -237,26 +478,63 @@
                     </div>
 
                     <div class="border border-zinc-900 bg-zinc-950/60 rounded-xl p-4 h-full flex flex-col">
-                        <span class="block text-zinc-500 font-bold text-[11px] tracking-wider uppercase border-b border-zinc-900 pb-2 mb-3">👁️ Podgląd opisu</span>
+                        <span class="block text-zinc-500 font-bold text-[11px] tracking-wider uppercase border-b border-zinc-900 pb-2 mb-3">Podgląd opisu</span>
                         <pre id="live-preview-box" class="text-zinc-400 text-xs font-mono bg-zinc-950 p-3 rounded-lg border border-zinc-900/60 overflow-y-auto whitespace-pre-wrap break-all h-[340px] leading-relaxed"></pre>
                     </div>
                 </div>
             </section>
 
-            <!-- SEKCJA: MINIATURKI (Zintegrowana z ThumbsUp.tv) -->
-            <section id="tab-preview" class="tab-content neon-panel p-8 rounded-2xl hidden text-center flex flex-col items-center justify-center min-h-[350px]">
-                <div class="max-w-md mx-auto space-y-6">
-                    <div class="text-4xl animate-bounce duration-1000">🖼️</div>
-                    <h2 class="text-xl font-bold text-white tracking-wide">Profesjonalny Podgląd Miniaturek</h2>
-                    <p class="text-zinc-400 text-sm leading-relaxed">
-                        Aby zapewnić Ci najlepszy podgląd na każdym urządzeniu (w tym tryb ciemny/jasny oraz widok na smartfonach i telewizorach), zintegrowaliśmy tę sekcję z zewnętrznym standardem branżowym.
-                    </p>
-                    <div class="pt-2">
-                        <a href="https://thumbsup.tv" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-black font-extrabold text-xs tracking-widest uppercase px-8 py-4 rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer">
-                            Otwórz ThumbsUp.tv ➔
-                        </a>
+            <section id="tab-music" class="tab-content neon-panel p-6 rounded-2xl hidden relative overflow-hidden">
+                
+                <div class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#050709]/70 backdrop-blur-md rounded-2xl">
+                    <div class="flex flex-col items-center transform transition-transform hover:scale-105 duration-500">
+                        <svg class="w-12 h-12 text-green-500/80 mb-4 drop-shadow-[0_0_8px_rgba(118,198,63,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        
+                        <h2 class="text-3xl md:text-4xl font-black tracking-[0.15em] text-white uppercase text-center drop-shadow-xl">
+                            Już wkrótce
+                        </h2>
+                        
+                        <div class="h-[2px] w-16 bg-gradient-to-r from-transparent via-green-500 to-transparent my-3 shadow-[0_0_10px_rgba(118,198,63,0.5)]"></div>
+                        
+                        <p class="text-green-400/80 text-xs font-bold tracking-[0.25em] uppercase text-center">
+                            Sekcja w przygotowaniu
+                        </p>
                     </div>
-                    <p class="text-[10px] text-zinc-600 uppercase tracking-wider font-semibold">Narzędzie otworzy się bezpiecznie w nowej karcie</p>
+                </div>
+
+                <div class="music-shell rounded-3xl p-5 md:p-6 opacity-20 pointer-events-none blur-[3px] select-none">
+                    <div class="flex flex-col gap-2 mb-5">
+                        <h2 class="text-2xl font-black text-white tracking-wide">Soundtrack Krainy Twórców</h2>
+                        <p class="text-zinc-500 text-sm">Wyszukuj, sortuj i pobieraj utwory OST. Możesz wybrać kilka gatunków naraz.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-[1fr_180px] gap-3 mb-4">
+                        <div class="relative">
+                            <input id="music-search" type="text" placeholder="Szukaj utworu lub tagu..." class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3.5 text-white outline-none focus:border-green-500/40 transition-all">
+                        </div>
+                        <select id="music-sort" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-3.5 text-white outline-none focus:border-green-500/40 transition-all">
+                            <option value="recommended">Polecane</option>
+                            <option value="title-asc">Nazwa A-Z</option>
+                            <option value="title-desc">Nazwa Z-A</option>
+                            <option value="duration-asc">Najkrótsze</option>
+                            <option value="duration-desc">Najdłuższe</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4" id="filter-pills">
+                        <button class="filter-btn-all active-filter tag-pill text-sm" data-filter="all">Wszystkie</button>
+                        <button class="filter-btn tag-pill tag-cinematic text-sm" data-filter="cinematic">Cinematic</button>
+                        <button class="filter-btn tag-pill tag-fight text-sm" data-filter="fight">Fight</button>
+                        <button class="filter-btn tag-pill tag-sad text-sm" data-filter="sad">Sad</button>
+                    </div>
+
+                    <p class="text-[11px] text-zinc-500 leading-relaxed mb-5">
+                        Więcej informacji o utworach syntetycznych uzyskasz najeżdżając na plakietkę informacyjną przy utworze.
+                    </p>
+
+                    <div class="grid grid-cols-1 gap-3" id="music-list"></div>
                 </div>
             </section>
             
@@ -267,28 +545,241 @@
         Created by Nieskot
     </footer>
 
+    <div id="global-player" class="spotify-player">
+        <div class="spotify-player-inner px-4 md:px-8 flex items-center justify-between gap-4">
+            
+            <div class="flex items-center gap-3 min-w-0 flex-1 sm:flex-initial sm:w-1/4">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h3 id="now-playing-title" class="text-zinc-400 font-semibold text-sm truncate">Brak utworu</h3>
+                        <div id="now-playing-info-target"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center gap-1.5 flex-1 max-w-xl">
+                <div id="player-controls" class="flex items-center gap-5 player-disabled">
+                    <button id="prev-btn" onclick="prevTrack()" class="text-zinc-500 hover:text-white transition-colors text-lg cursor-pointer">⏮</button>
+                    <button id="play-btn" onclick="togglePlay()" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-sm font-bold hover:scale-105 transition-transform cursor-pointer">▶</button>
+                    <button id="next-btn" onclick="nextTrack()" class="text-zinc-500 hover:text-white transition-colors text-lg cursor-pointer">⏭</button>
+                </div>
+                <div id="player-progress-wrap" class="w-full flex items-center gap-2 text-[11px] text-zinc-500 font-medium player-disabled">
+                    <span id="current-time" class="w-8 text-right">0:00</span>
+                    <input id="progress" type="range" min="0" max="100" value="0" oninput="seekTrack()" class="flex-1 h-1">
+                    <span id="duration-time" class="w-8">0:00</span>
+                </div>
+            </div>
+
+            <div class="hidden sm:flex items-center justify-end gap-5 w-1/4 shrink-0">
+                <div id="player-download-target"></div>
+                
+                <div class="flex items-center gap-2 w-24">
+                    <span class="text-zinc-400 text-xs">Głośność</span>
+                    <input id="volume" type="range" min="0" max="100" value="80" oninput="setVolume(this.value)" class="w-full h-1">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="download-modal" class="modal-overlay">
+        <div class="modal-box text-sm">
+            <h3 class="text-white text-lg font-extrabold mb-2 tracking-wide">Pobieranie utworu</h3>
+            <p class="text-zinc-400 text-xs leading-relaxed mb-4">
+                Zaleca się (opcjonalnie), aby przy wykorzystaniu tego utworu w swoim materiale wkleić do opisu filmu poniższą informację:
+            </p>
+            
+            <div class="bg-zinc-950 border border-zinc-900 rounded-xl p-3 font-mono text-xs text-green-400 mb-5 select-all break-all" id="modal-copy-text">
+                Utwór: [Nazwa] pochodzi z Kraina Twórców OST
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 justify-end">
+                <button onclick="closeDownloadModal()" class="text-zinc-500 hover:text-zinc-300 text-xs font-bold uppercase tracking-widest px-4 py-3 rounded-xl transition-colors order-2 sm:order-1">
+                    Anuluj
+                </button>
+                <button onclick="triggerDownload(false)" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 text-xs font-bold uppercase tracking-widest px-4 py-3 rounded-xl transition-colors order-1 sm:order-2">
+                    Tylko pobierz
+                </button>
+                <button onclick="triggerDownload(true)" class="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-black text-xs font-extrabold uppercase tracking-widest px-5 py-3 rounded-xl shadow-lg transition-transform active:scale-95 order-0 sm:order-3">
+                    Skopiuj i pobierz
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ==========================================
+        //  SZABLON KONFIGURACYJNY (TWOJA BAZA DANYCH)
+        // ==========================================
+        const CONFIG = {
+            downloadCreditTemplate: 'Utwór: "{title}" pochodzi z Kraina Twórców OST',
+            defaultMinecraftUuid: "b7284d49-f0bd-48f1-8f45-e7d95741dd06",
+
+            tracks: [
+                {
+                    title: "Awakening of Creators",
+                    src: "music/awakening-of-creators.mp3",
+                    tags: ["cinematic"],
+                    ai: true,
+                    duration: "3:54",
+                    sort: 1
+                },
+                {
+                    title: "Shadow of the Dynasty",
+                    src: "music/shadow-of-the-dynasty.mp3",
+                    tags: ["fight"],
+                    ai: true,
+                    duration: "3:21",
+                    sort: 2
+                },
+                {
+                    title: "First Light",
+                    src: "music/first-light.mp3",
+                    tags: ["cinematic", "sad"],
+                    ai: false,
+                    duration: "2:58",
+                    sort: 3
+                },
+                {
+                    title: "Safe Haven",
+                    src: "music/safe-haven.mp3",
+                    tags: ["sad"],
+                    ai: false,
+                    duration: "2:44",
+                    sort: 4
+                }
+            ]
+        };
+
+        const tracks = CONFIG.tracks;
+        const audio = new Audio();
+        audio.preload = 'metadata';
+
+        let currentTrackIndex = -1;
+        let isPlaying = false;
+        let activeFilters = new Set();
+        let activeSort = 'recommended';
+        let searchQuery = '';
+        let pendingDownloadSrc = '';
+        let pendingDownloadTitle = '';
+
         window.addEventListener('DOMContentLoaded', () => {
             initializeDynamicLists();
             updateLivePreview();
+            generateAvatar();
+            renderMusicList();
+            bindMusicControls();
+            setVolume(80);
+            updateProgressBarBackground();
+
+            handleHashNavigation();
+            window.addEventListener('hashchange', handleHashNavigation);
+
+            audio.addEventListener('timeupdate', () => {
+                syncProgress();
+                updateProgressBarBackground();
+            });
+            audio.addEventListener('loadedmetadata', syncDuration);
+            audio.addEventListener('ended', () => {
+                if (currentTrackIndex < tracks.length - 1) {
+                    nextTrack();
+                    return;
+                }
+                isPlaying = false;
+                updatePlayButton();
+            });
         });
 
-        function switchTab(tabId) {
+        function handleHashNavigation() {
+            const hash = window.location.hash.toLowerCase();
+            if (hash === '#muzyka') {
+                switchTab('tab-music', false);
+            } else if (hash === '#opisy') {
+                switchTab('tab-descriptions', false);
+            } else {
+                switchTab('tab-avatars', false);
+            }
+        }
+
+        function switchTab(tabId, updateHash = false) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
             document.getElementById(tabId).classList.remove('hidden');
             document.getElementById('btn-' + tabId).classList.add('active');
+
+            if (updateHash) {
+                if (tabId === 'tab-music') window.location.hash = 'muzyka';
+                else if (tabId === 'tab-descriptions') window.location.hash = 'opisy';
+                else if (tabId === 'tab-avatars') window.location.hash = 'glowki';
+            }
+
+            const player = document.getElementById('global-player');
+            if (tabId === 'tab-music') {
+                player.classList.add('visible');
+                document.body.classList.add('player-active');
+            } else {
+                player.classList.remove('visible');
+                document.body.classList.remove('player-active');
+            }
+        }
+
+        // Visage (vzge.me) renderuje pełny model 3D razem z drugą warstwą skina (hełm/czapka/itd.),
+        // dlatego jest źródłem głównym dla wszystkich trzech miniaturek. Przyjmuje czysty nick gracza.
+        // Crafthead/Minotar to zapasowe API na wypadek niedostępności Visage.
+        function normalizeUsername() {
+            const raw = document.getElementById('mc-username').value.trim();
+            return encodeURIComponent(raw || 'Steve');
+        }
+
+        function setAvatarSource(imgId, linkId, primaryPreview, primaryDownload, fallbackPreview, fallbackDownload) {
+            const img = document.getElementById(imgId);
+            const link = document.getElementById(linkId);
+            if (!img || !link) return;
+
+            const apply = (preview, download) => {
+                img.src = preview;
+                link.href = download;
+            };
+
+            img.onerror = null;
+            apply(primaryPreview, primaryDownload);
+
+            img.onerror = () => {
+                img.onerror = null;
+                apply(fallbackPreview, fallbackDownload);
+            };
         }
 
         function generateAvatar() {
-            const username = document.getElementById('mc-username').value.trim() || 'Steve';
-            document.getElementById('avatar-visage').src = `https://vzge.me/bust/128/${username}`;
-            document.getElementById('avatar-3d').src = `https://crafthead.net/cube/${username}`;
-            document.getElementById('avatar-2d').src = `https://crafthead.net/avatar/${username}`;
-            document.getElementById('download-visage').href = `https://vzge.me/bust/512/${username}`;
-            document.getElementById('download-3d').href = `https://crafthead.net/cube/${username}`;
-            document.getElementById('download-2d').href = `https://crafthead.net/avatar/${username}`;
+            const username = normalizeUsername();
+
+            setAvatarSource(
+                'avatar-visage',
+                'download-visage',
+                `https://vzge.me/bust/128/${username}`,
+                `https://vzge.me/bust/512/${username}`,
+                `https://minotar.net/bust/${username}/128.png`,
+                `https://minotar.net/bust/${username}/512.png`
+            );
+
+            setAvatarSource(
+                'avatar-3d',
+                'download-3d',
+                `https://vzge.me/head/128/${username}`,
+                `https://vzge.me/head/512/${username}`,
+                `https://crafthead.net/cube/${username}/128`,
+                `https://crafthead.net/cube/${username}/512`
+            );
+
+            setAvatarSource(
+                'avatar-2d',
+                'download-2d',
+                `https://vzge.me/face/128/${username}`,
+                `https://vzge.me/face/512/${username}`,
+                `https://minotar.net/helm/${username}/128.png`,
+                `https://minotar.net/helm/${username}/512.png`
+            );
         }
 
         function escapeHtmlAttr(value) {
@@ -321,13 +812,8 @@
             const musicContainer = document.getElementById('music-rows');
             const socialContainer = document.getElementById('social-rows');
 
-            if (musicContainer && musicContainer.children.length === 0) {
-                addMusicRow();
-            }
-
-            if (socialContainer && socialContainer.children.length === 0) {
-                addSocialRow();
-            }
+            if (musicContainer && musicContainer.children.length === 0) addMusicRow();
+            if (socialContainer && socialContainer.children.length === 0) addSocialRow();
         }
 
         function addMusicRow(value = '') {
@@ -346,9 +832,7 @@
 
         function removeDynamicRow(button) {
             const row = button.closest('.dynamic-row');
-            if (row) {
-                row.remove();
-            }
+            if (row) row.remove();
             updateLivePreview();
         }
 
@@ -384,13 +868,8 @@
             text += `https://icehost.pl\n\n`;
             text += `Wystąpili: ${creators}\n\n`;
 
-            if (inspiration) {
-                text += `Inspiracja: ${inspiration}\n\n`;
-            }
-
-            if (build) {
-                text += `Wykorzystana budowla: „${build}”\n\n`;
-            }
+            if (inspiration) text += `Inspiracja: ${inspiration}\n\n`;
+            if (build) text += `Wykorzystana budowla: „${build}”\n\n`;
 
             if (socialArray.length > 0) {
                 text += `Znajdziesz mnie tutaj:\n`;
@@ -416,9 +895,7 @@
 
         function updateLivePreview() {
             const previewBox = document.getElementById('live-preview-box');
-            if (previewBox) {
-                previewBox.textContent = buildDescriptionText();
-            }
+            if (previewBox) previewBox.textContent = buildDescriptionText();
         }
 
         function generateDescription() {
@@ -427,11 +904,360 @@
             navigator.clipboard.writeText(finalForm).then(() => {
                 const status = document.getElementById('copy-status');
                 status.classList.remove('opacity-0');
-                status.textContent = 'Skopiowano do schowka!';
+                status.textContent = 'Skopiowano do schowka';
                 setTimeout(() => status.classList.add('opacity-0'), 2000);
             }).catch(() => {
-                alert("Błąd podczas kopiowania.");
+                alert('Błąd podczas kopiowania.');
             });
+        }
+
+        function bindMusicControls() {
+            const search = document.getElementById('music-search');
+            const sort = document.getElementById('music-sort');
+            const volume = document.getElementById('volume');
+
+            if (search) {
+                search.addEventListener('input', () => {
+                    searchQuery = search.value.trim().toLowerCase();
+                    renderMusicList();
+                });
+            }
+
+            if (sort) {
+                sort.addEventListener('change', () => {
+                    activeSort = sort.value;
+                    renderMusicList();
+                });
+            }
+
+            if (volume) {
+                volume.addEventListener('input', () => {
+                    setVolume(parseInt(volume.value, 10));
+                });
+            }
+
+            const allBtn = document.querySelector('.filter-btn-all');
+            if(allBtn) {
+                allBtn.addEventListener('click', () => {
+                    activeFilters.clear();
+                    document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active-filter'));
+                    allBtn.classList.add('active-filter');
+                    renderMusicList();
+                });
+            }
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    
+                    if (activeFilters.has(filter)) {
+                        activeFilters.delete(filter);
+                        btn.classList.remove('active-filter');
+                    } else {
+                        activeFilters.add(filter);
+                        btn.classList.add('active-filter');
+                    }
+
+                    if (activeFilters.size > 0) {
+                        allBtn.classList.remove('active-filter');
+                    } else {
+                        allBtn.classList.add('active-filter');
+                    }
+
+                    renderMusicList();
+                });
+            });
+        }
+
+        function tagClass(tag) {
+            if (tag === 'cinematic') return 'tag-cinematic';
+            if (tag === 'fight') return 'tag-fight';
+            if (tag === 'sad') return 'tag-sad';
+            return '';
+        }
+
+        function getFilteredTracks() {
+            let result = [...tracks];
+
+            if (activeFilters.size > 0) {
+                result = result.filter(track => 
+                    track.tags.some(tag => activeFilters.has(tag))
+                );
+            }
+
+            if (searchQuery) {
+                result = result.filter(track => {
+                    const haystack = `${track.title} ${track.tags.join(' ')}`.toLowerCase();
+                    return haystack.includes(searchQuery);
+                });
+            }
+
+            switch (activeSort) {
+                case 'title-asc':
+                    result.sort((a, b) => a.title.localeCompare(b.title, 'pl'));
+                    break;
+                case 'title-desc':
+                    result.sort((a, b) => b.title.localeCompare(a.title, 'pl'));
+                    break;
+                case 'duration-asc':
+                    result.sort((a, b) => toSeconds(a.duration) - toSeconds(b.duration));
+                    break;
+                case 'duration-desc':
+                    result.sort((a, b) => toSeconds(b.duration) - toSeconds(a.duration));
+                    break;
+                default:
+                    result.sort((a, b) => a.sort - b.sort);
+                    break;
+            }
+
+            return result;
+        }
+
+        function toSeconds(duration) {
+            const [m, s] = String(duration).split(':').map(Number);
+            return (m * 60) + s;
+        }
+
+        function renderMusicList() {
+            const container = document.getElementById('music-list');
+            if (!container) return;
+
+            const filtered = getFilteredTracks();
+            if (!filtered.length) {
+                container.innerHTML = `
+                    <div class="rounded-2xl border border-zinc-900 bg-zinc-950/50 p-6 text-center text-zinc-500">
+                        Nie znaleziono utworów pasujących do filtra.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(track => {
+                const tagsHtml = track.tags.map(tag => `<span class="tag-pill ${tagClass(tag)} pointer-events-none">${tag}</span>`).join('');
+                
+                const infoBadge = track.ai ? `
+                    <div class="tooltip-wrap shrink-0">
+                        <span class="badge-info-modern">i</span>
+                        <div class="tooltip-box">
+                            Muzyka wygenerowana z użyciem AI. Przy publikacji filmu na YouTube może być wymagane oznaczenie treści syntetycznych.
+                        </div>
+                    </div>
+                ` : '';
+
+                return `
+                    <article class="music-card rounded-2xl p-4 md:p-5 flex flex-col gap-4">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="text-white font-extrabold text-base tracking-wide truncate">${track.title}</h3>
+                                    ${infoBadge}
+                                </div>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    ${tagsHtml}
+                                </div>
+                                <div class="text-[11px] text-zinc-600 mt-2 font-semibold tracking-wide">
+                                    ${track.duration}
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button onclick="playTrackByName('${track.title.replace(/'/g, "\\'")}')" class="btn-soft text-zinc-200 rounded-xl px-4 py-3 text-xs font-extrabold uppercase tracking-widest transition-all min-w-[126px]">
+                                    Odtwórz
+                                </button>
+                                <button onclick="openDownloadModal('${track.src}', '${track.title.replace(/'/g, "\\'")}')" class="bg-green-600 hover:bg-green-500 text-black rounded-xl px-4 py-3 text-xs font-extrabold uppercase tracking-widest transition-all min-w-[58px] text-center cursor-pointer">
+                                    Pobierz
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function playTrackByName(name) {
+            const index = tracks.findIndex(track => track.title === name);
+            if (index >= 0) playTrack(index);
+        }
+
+        function playTrack(index) {
+            const track = tracks[index];
+            if (!track) return;
+
+            const sameTrack = currentTrackIndex === index;
+
+            if (sameTrack && isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                updatePlayButton();
+                return;
+            }
+
+            document.getElementById('player-controls').classList.remove('player-disabled');
+            document.getElementById('player-progress-wrap').classList.remove('player-disabled');
+
+            currentTrackIndex = index;
+            audio.src = track.src;
+            audio.currentTime = 0;
+            audio.play().then(() => {
+                isPlaying = true;
+                updateNowPlaying(track);
+                updatePlayButton();
+            }).catch(() => {
+                alert('Nie udało się odtworzyć utworu.');
+            });
+        }
+
+        function prevTrack() {
+            if (currentTrackIndex > 0) playTrack(currentTrackIndex - 1);
+        }
+
+        function nextTrack() {
+            if (currentTrackIndex < tracks.length - 1) playTrack(currentTrackIndex + 1);
+        }
+
+        function togglePlay() {
+            if (!audio.src || currentTrackIndex === -1) {
+                if (tracks.length > 0) playTrack(0);
+                return;
+            }
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    updatePlayButton();
+                });
+            } else {
+                audio.pause();
+                isPlaying = false;
+                updatePlayButton();
+            }
+        }
+
+        function updateNowPlaying(track) {
+            const titleEl = document.getElementById('now-playing-title');
+            const infoTarget = document.getElementById('now-playing-info-target');
+            const downloadTarget = document.getElementById('player-download-target');
+
+            titleEl.textContent = track.title;
+            titleEl.classList.remove('text-zinc-400', 'text-white');
+            titleEl.classList.add('text-white');
+
+            downloadTarget.innerHTML = `
+                <button onclick="openDownloadModal('${track.src}', '${track.title.replace(/'/g, "\\'")}')" class="text-zinc-400 hover:text-white text-xs font-semibold tracking-wide uppercase px-3 py-1.5 rounded-md hover:bg-zinc-800/80 transition-all flex items-center gap-1 cursor-pointer">
+                    Pobierz plik
+                </button>
+            `;
+            
+            if (track.ai) {
+                infoTarget.innerHTML = `
+                    <div class="tooltip-wrap shrink-0">
+                        <span class="badge-info-modern">i</span>
+                        <div class="tooltip-box">
+                            Muzyka wygenerowana z użyciem AI. Przy publikacji filmu na YouTube może być wymagane oznaczenie treści syntetycznych.
+                        </div>
+                    </div>
+                `;
+            } else {
+                infoTarget.innerHTML = '';
+            }
+
+            titleEl.classList.remove('animate-pulse');
+            void titleEl.offsetWidth;
+            titleEl.classList.add('animate-pulse');
+        }
+
+        function updatePlayButton() {
+            const btn = document.getElementById('play-btn');
+            if (!btn) return;
+            btn.textContent = isPlaying ? '⏸' : '▶';
+        }
+
+        function openDownloadModal(src, title) {
+            pendingDownloadSrc = src;
+            pendingDownloadTitle = title;
+            
+            const modalText = document.getElementById('modal-copy-text');
+            modalText.textContent = CONFIG.downloadCreditTemplate.replace("{title}", title);
+            
+            document.getElementById('download-modal').classList.add('open');
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('download-modal').classList.remove('open');
+            pendingDownloadSrc = '';
+            pendingDownloadTitle = '';
+        }
+
+        function triggerDownload(shouldCopy) {
+            if (!pendingDownloadSrc) return;
+
+            if (shouldCopy) {
+                const textToCopy = document.getElementById('modal-copy-text').textContent;
+                navigator.clipboard.writeText(textToCopy).catch(() => {
+                    console.log("Nie udało się skopiować.");
+                });
+            }
+
+            const link = document.createElement('a');
+            link.href = pendingDownloadSrc;
+            link.download = pendingDownloadSrc.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            closeDownloadModal();
+        }
+
+        function syncProgress() {
+            const progress = document.getElementById('progress');
+            const currentTime = document.getElementById('current-time');
+            if (!progress || !currentTime || !audio.duration || Number.isNaN(audio.duration)) return;
+
+            progress.value = (audio.currentTime / audio.duration) * 100;
+            currentTime.textContent = formatTime(audio.currentTime);
+        }
+
+        function syncDuration() {
+            const durationTime = document.getElementById('duration-time');
+            const progress = document.getElementById('progress');
+            if (!durationTime || !progress || !audio.duration || Number.isNaN(audio.duration)) return;
+
+            durationTime.textContent = formatTime(audio.duration);
+            if (!isPlaying) progress.value = 0;
+            updateProgressBarBackground();
+        }
+
+        function seekTrack() {
+            if (!audio.duration || Number.isNaN(audio.duration)) return;
+            const progress = document.getElementById('progress');
+            if (!progress) return;
+            audio.currentTime = (progress.value / 100) * audio.duration;
+            updateProgressBarBackground();
+        }
+
+        function setVolume(value) {
+            const normalized = Math.max(0, Math.min(100, value));
+            audio.volume = normalized / 100;
+            
+            const input = document.getElementById('volume');
+            if (input) {
+                if (Number(input.value) !== normalized) input.value = normalized;
+                input.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${normalized}%, rgba(255,255,255,0.08) ${normalized}%, rgba(255,255,255,0.08) 100%)`;
+            }
+        }
+
+        function updateProgressBarBackground() {
+            const progress = document.getElementById('progress');
+            if (!progress) return;
+            const val = progress.value || 0;
+            progress.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${val}%, rgba(255,255,255,0.08) ${val}%, rgba(255,255,255,0.08) 100%)`;
+        }
+
+        function formatTime(seconds) {
+            const s = Math.max(0, Math.floor(seconds || 0));
+            const m = Math.floor(s / 60);
+            const r = s % 60;
+            return `${m}:${String(r).padStart(2, '0')}`;
         }
     </script>
 </body>
